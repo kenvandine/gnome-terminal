@@ -1,0 +1,75 @@
+name: gnome-terminal
+version: 3.24.3
+summary: Use the command line
+description: |
+
+    GNOME Terminal is a terminal emulator application for accessing a UNIX 
+    shell environment which can be used to run programs available on your 
+    system.
+
+    It supports several profiles, multiple tabs and implements several 
+    keyboard shortcuts.
+
+icon: help/C/figures/gnome-terminal-icon.png
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: strict
+
+# libgdk is linked with libmirclient, which doesn't seem to end up in
+# the snap otherwise.
+plugs:
+  mir-libs:
+    interface: content
+    content: mir0
+    target: mir-libs
+    default-provider: mir-libs
+
+slots:
+  # for GtkApplication registration
+  gnome-terminal:
+    interface: dbus
+    bus: session
+    name: org.gnome.gnome-terminal
+
+apps:
+  gnome-terminal:
+    command: desktop-launch $SNAP/bin/gnome-terminal
+    environment:
+      GSETTINGS_SCHEMA_DIR: /snap/gnome-terminal/current/share/glib-2.0/schemas
+    plugs:
+      - x11
+      - home
+      - gsettings
+      - mir-libs
+    slots:
+      - gnome-terminal
+
+parts:
+  gnome-terminal:
+    after:
+      - desktop-gtk3
+    plugin: autotools
+    source: .
+    install: |
+      mkdir -p $SNAPCRAFT_PART_INSTALL/mir-libs
+      glib-compile-schemas $SNAPCRAFT_PART_INSTALL/share/glib-2.0/schemas
+
+    build-packages:
+      - gnome-common
+      - autotools-dev
+      - intltool
+      - libx11-dev
+      - libdconf-dev
+      - libgtk-3-dev
+      - libglib2.0-dev
+      - libvte-2.91-dev
+      - libsm-dev
+      - gnome-pkg-tools
+      - docbook-to-man
+      - valac
+      - uuid-dev
+      - yelp-tools
+      - desktop-file-utils
+      - gsettings-desktop-schemas-dev
+      - gnome-shell
+      - libnautilus-extension-dev
