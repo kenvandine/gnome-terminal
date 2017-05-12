@@ -1,5 +1,5 @@
 name: gnome-terminal
-version: 3.24.3
+version: 3.20.4
 summary: Use the command line
 description: |
 
@@ -29,7 +29,7 @@ slots:
   gnome-terminal:
     interface: dbus
     bus: session
-    name: org.gnome.gnome-terminal
+    name: org.gnome.Terminal
 
 apps:
   gnome-terminal:
@@ -50,6 +50,8 @@ parts:
       - desktop-gtk3
     plugin: autotools
     source: .
+    configflags:
+      - --disable-search-provider
     install: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/mir-libs
       glib-compile-schemas $SNAPCRAFT_PART_INSTALL/share/glib-2.0/schemas
